@@ -74,7 +74,10 @@ class AsanaAPI(object):
         r = requests.get(target, auth=(self.apikey, ""))
         if self._ok_status(r.status_code) and r.status_code is not 404:
             if r.headers['content-type'].split(';')[0] == 'application/json':
-                return json.loads(r.text)['data']
+                if hasattr(r, 'text'):
+					return json.loads(r.text)['data']
+				else:
+					return json.loads(r.content)['data']
             else:
                 raise Exception('Did not receive json from api: %s' % str(r))
         else:
